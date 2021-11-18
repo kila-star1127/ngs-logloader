@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "dbaeumer.vscode-eslint",
+    "github.codespaces",
+    "esbenp.prettier-vscode",
+    "github.vscode-pull-request-github",
+    "skyran.js-jsx-snippets"
+  ]
+}
