@@ -1,7 +1,7 @@
 {
   "name": "ngs-logloader",
   "version": "0.0.1",
-  "description": "read, analize, and view the \"PHANTASY STAR ONLINE 2 : NEW GENESIS\" logs.",
+  "description": "read, analyze, and view the \"PHANTASY STAR ONLINE 2 : NEW GENESIS\" logs.",
   "main": "index.js",
   "author": "KILA <32559459+kila-star1127@users.noreply.github.com>",
   "license": "MIT",
