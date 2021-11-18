@@ -34,6 +34,16 @@
   ],
   "ignorePatterns": [],
   "rules": {
+    "sort-imports": [
+      "warn",
+      {
+        "ignoreCase": false,
+        "ignoreDeclarationSort": false,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+        "allowSeparatedGroups": false
+      }
+    ],
     "require-jsdoc": 0,
     "react/display-name": 0,
     "react/prop-types": 0,
@@ -47,6 +57,14 @@
         "varsIgnorePattern": "^_",
         "args": "after-used",
         "argsIgnorePattern": "^_"
+      }
+    ],
+    "prefer-arrow/prefer-arrow-functions": [
+      "warn",
+      {
+        "disallowPrototype": true,
+        "singleReturnOnly": false,
+        "classPropertiesAllowed": false
       }
     ],
     "@typescript-eslint/explicit-module-boundary-types": 0,
