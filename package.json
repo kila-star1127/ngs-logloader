@@ -2,8 +2,12 @@
   "name": "ngs-logloader",
   "version": "0.0.1",
   "description": "read, analyze, and view the \"PHANTASY STAR ONLINE 2 : NEW GENESIS\" logs.",
-  "main": "index.js",
+  "main": "src/main/index.ts",
   "author": "KILA <32559459+kila-star1127@users.noreply.github.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "electron": "^16.0.0",
+    "typescript": "^4.5.2"
+  }
 }
