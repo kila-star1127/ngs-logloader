@@ -1,0 +1,59 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "google",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2021,
+    "project": "./tsconfig.eslint.json",
+    "sourceType": "module",
+    "tsconfigRootDir": "./"
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "unused-imports",
+    "jsx-a11y",
+    "prefer-arrow",
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": [],
+  "rules": {
+    "require-jsdoc": 0,
+    "react/display-name": 0,
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": "off",
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-unsafe-return": 0,
+    "@typescript-eslint/no-unsafe-assignment": 0
+  },
+  "settings": {
+    "react": { "version": "detect" }
+  }
+}
