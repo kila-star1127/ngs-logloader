@@ -1,6 +1,5 @@
 import { app } from 'electron';
-import { createMenu } from './helpers/create-menu';
-import { createWindow } from './helpers';
+import { createMainWindow } from './window/main';
 import serve from 'electron-serve';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -15,29 +14,7 @@ if (!gotTheLock) {
 } else {
   void (async () => {
     await app.whenReady();
-
-    const mainWindow = createWindow({
-      windowName: 'main',
-      options: {
-        width: 1000,
-        height: 600,
-        show: false, // ready-to-show
-      },
-    });
-
-    mainWindow.once('ready-to-show', () => {
-      mainWindow.show();
-    });
-
-    createMenu({ window: mainWindow });
-
-    if (isProd) {
-      void mainWindow.loadURL('app://./index.html');
-    } else {
-      const [, , port] = process.argv;
-      await mainWindow.loadURL(`http://localhost:${port}/`);
-      mainWindow.webContents.openDevTools();
-    }
+    await createMainWindow();
   })();
 
   app.on('window-all-closed', () => {
