@@ -1,6 +1,6 @@
 appId: xyz.kila-star.ngs-logloader
 productName: ngs-logloader
-copyright: Copyright © 2018 Yoshihide Shiono
+copyright: Copyright © 2021 KILA
 directories:
   output: dist
   buildResources: resources
