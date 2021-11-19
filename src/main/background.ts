@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { createMenu } from './helpers/create-menu';
 import { createWindow } from './helpers';
 import serve from 'electron-serve';
 
@@ -27,6 +28,8 @@ if (!gotTheLock) {
     mainWindow.once('ready-to-show', () => {
       mainWindow.show();
     });
+
+    createMenu({ window: mainWindow });
 
     if (isProd) {
       void mainWindow.loadURL('app://./index.html');
