@@ -2,20 +2,29 @@
   "name": "ngs-logloader",
   "version": "0.0.1",
   "description": "read, analyze, and view the \"PHANTASY STAR ONLINE 2 : NEW GENESIS\" logs.",
-  "main": "src/main/index.ts",
+  "main": "app/background.js",
   "author": "KILA <32559459+kila-star1127@users.noreply.github.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
+    "dev": "nextron",
+    "build": "nextron build",
+    "postinstall": "electron-builder install-app-deps",
     "fix": "run-s fix:eslint fix:prettier",
     "fix:eslint": "yarn lint:eslint --fix",
     "fix:prettier": "yarn lint:prettier --write",
     "lint:prettier": "prettier ."
   },
   "devDependencies": {
+    "@types/next": "^9.0.0",
+    "@types/node": "^14.14.31",
+    "@types/object.pick": "^1.3.1",
+    "@types/react": "^16.9.49",
+    "@types/styled-components": "^5.1.15",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "electron": "^16.0.0",
+    "electron-builder": "^22.13.1",
     "eslint": "^8.2.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-next": "^12.0.4",
@@ -24,11 +33,18 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "next": "^11.1.2",
+    "nextron": "^7.1.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.4.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "electron-serve": "^1.1.0"
+    "electron-serve": "^1.1.0",
+    "electron-store": "^8.0.1",
+    "object.pick": "^1.3.0",
+    "styled-components": "^5.3.3"
   }
 }
