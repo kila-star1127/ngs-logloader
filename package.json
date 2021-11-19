@@ -2,11 +2,11 @@
   "name": "ngs-logloader",
   "version": "0.0.1",
   "description": "read, analyze, and view the \"PHANTASY STAR ONLINE 2 : NEW GENESIS\" logs.",
-  "main": "src/main/index.ts",
   "author": "KILA <32559459+kila-star1127@users.noreply.github.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
+    "tsc": "tsc",
     "fix": "run-s fix:eslint fix:prettier",
     "fix:eslint": "yarn lint:eslint --fix",
     "fix:prettier": "yarn lint:prettier --write",
