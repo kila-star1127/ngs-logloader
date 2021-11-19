@@ -1,0 +1,12 @@
+appId: com.example.nextron
+productName: My Nextron App
+copyright: Copyright © 2018 Yoshihide Shiono
+directories:
+  output: dist
+  buildResources: src/resources
+files:
+  - from: ./src
+    filter:
+      - package.json
+      - app
+publish: null
