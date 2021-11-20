@@ -7,10 +7,8 @@ const createSettingsWindow = async () => {
   const window = await createWindow({
     windowName: 'settings',
     loadPath: '/settings',
-    options: { width: 800, height: 600 },
+    options: { width: 800, height: 600, frame: false },
   });
-
-  window.removeMenu();
 
   settingsWindow = window;
   window.on('closed', () => {
