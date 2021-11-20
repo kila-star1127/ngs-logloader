@@ -1,4 +1,4 @@
-import { BrowserWindow, app, globalShortcut } from 'electron';
+import { BrowserWindow, app, globalShortcut, ipcMain } from 'electron';
 import { configStore } from './stores/config';
 import { createMainWindow } from './window/main';
 import serve from 'electron-serve';
@@ -16,6 +16,11 @@ if (!gotTheLock) {
   void (async () => {
     await app.whenReady();
     configStore.store.get('alwaysOnTop');
+
+    ipcMain.handle('getConfig', (e, key) => configStore.store.get(key));
+    ipcMain.handle('setConfig', (e, ...[key, value]) => {
+      configStore.store.set(key, value);
+    });
 
     await createMainWindow();
 

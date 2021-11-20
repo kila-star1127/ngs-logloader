@@ -1,5 +1,4 @@
-import { BrowserWindow, ipcMain } from 'electron';
-import { configStore } from '../stores/config';
+import { BrowserWindow } from 'electron';
 import { createWindow } from '../helpers';
 
 let settingsWindow: BrowserWindow | undefined;
@@ -14,11 +13,8 @@ const createSettingsWindow = async () => {
   window.removeMenu();
 
   settingsWindow = window;
-  window.on('closed', () => (settingsWindow = undefined));
-
-  ipcMain.handle('getConfig', (e, key) => configStore.store.get(key));
-  ipcMain.handle('setConfig', (e, ...[key, value]) => {
-    configStore.store.set(key, value);
+  window.on('closed', () => {
+    settingsWindow = undefined;
   });
 
   return window;
