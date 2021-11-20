@@ -36,6 +36,7 @@ const windowWithinBounds = (_windowState: WindowState, bounds: Electron.Rectangl
 
 const createWindowOptions = (options: WindowOptions): WindowOptions => ({
   ...options,
+  show: false,
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
@@ -43,9 +44,13 @@ const createWindowOptions = (options: WindowOptions): WindowOptions => ({
   },
 });
 
-export type CreateWindowOptions = { windowName?: string; options?: WindowOptions };
+export type CreateWindowOptions = {
+  windowName?: string;
+  loadPath?: string;
+  options?: WindowOptions;
+};
 
-export const createWindow = ({ windowName, options }: CreateWindowOptions): BrowserWindow => {
+export const createWindow = async ({ windowName, loadPath, options }: CreateWindowOptions) => {
   let windowState: WindowState = {};
 
   if (windowName) {
@@ -102,6 +107,21 @@ export const createWindow = ({ windowName, options }: CreateWindowOptions): Brow
   }
 
   win.on('page-title-updated', (_, title) => win.webContents.send('page-title-updated', title));
+
+  if (options?.show || options?.show === undefined) {
+    win.once('ready-to-show', () => {
+      win.show();
+    });
+  }
+
+  if (loadPath) {
+    if (process.env.NODE_ENV === 'production') {
+      await win.loadURL(`app://./${loadPath}.html`);
+    } else {
+      const [, , port] = process.argv;
+      await win.loadURL(`http://localhost:${port}/${loadPath}`);
+    }
+  }
 
   return win;
 };
