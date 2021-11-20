@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import { createMenu } from '../helpers/create-menu';
 import { createWindow } from '../helpers';
 
@@ -12,6 +13,8 @@ export const createMainWindow = async () => {
   });
 
   createMenu({ window: mainWindow });
+
+  mainWindow.on('closed', () => app.quit());
 
   return mainWindow;
 };
