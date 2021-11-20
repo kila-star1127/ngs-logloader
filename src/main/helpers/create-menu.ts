@@ -1,5 +1,5 @@
 import { BrowserWindow, Menu } from 'electron';
-import { createSettingsWindow } from '../window/settings';
+import { showSettingsWindow } from '../window/settings';
 
 type Options = { window: BrowserWindow };
 export const createMenu = ({ window }: Options) => {
@@ -7,13 +7,13 @@ export const createMenu = ({ window }: Options) => {
     {
       label: 'ファイル',
       submenu: [
+        // {
+        //   type: 'checkbox',
+        //   click: (menuItem, window) => window?.setAlwaysOnTop(menuItem.checked),
+        //   label: '常に手前に表示',
+        // },
         {
-          type: 'checkbox',
-          click: (menuItem, window) => window?.setAlwaysOnTop(menuItem.checked),
-          label: '常に手前に表示',
-        },
-        {
-          click: () => createSettingsWindow(),
+          click: () => showSettingsWindow(),
           label: '設定',
         },
         { type: 'separator' },

@@ -3,12 +3,7 @@ import { createWindow } from '../helpers';
 
 let settingsWindow: BrowserWindow | undefined;
 
-export const createSettingsWindow = async () => {
-  if (settingsWindow) {
-    settingsWindow.moveTop();
-    return settingsWindow;
-  }
-
+const createSettingsWindow = async () => {
   const window = await createWindow({
     windowName: 'settings',
     loadPath: '/settings',
@@ -21,4 +16,13 @@ export const createSettingsWindow = async () => {
   window.on('closed', () => (settingsWindow = undefined));
 
   return window;
+};
+
+export const showSettingsWindow = async () => {
+  if (settingsWindow) {
+    settingsWindow.moveTop();
+    return settingsWindow;
+  }
+
+  return createSettingsWindow();
 };
