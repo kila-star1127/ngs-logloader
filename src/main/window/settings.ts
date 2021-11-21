@@ -20,7 +20,7 @@ const createSettingsWindow = async () => {
 
 export const showSettingsWindow = async () => {
   if (settingsWindow) {
-    settingsWindow.moveTop();
+    settingsWindow.focus();
     return settingsWindow;
   }
 

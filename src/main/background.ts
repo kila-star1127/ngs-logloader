@@ -2,6 +2,7 @@ import './init';
 import { BrowserWindow, Menu, app, globalShortcut, ipcMain } from 'electron';
 import { configStore } from './stores/config';
 import { createMainWindow } from './window/main';
+import { showSettingsWindow } from './window/settings';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -25,6 +26,8 @@ if (!gotTheLock) {
       .on('minimize', (e) => BrowserWindow.fromId(e.sender.id)?.minimize())
       .on('restore', (e) => BrowserWindow.fromId(e.sender.id)?.restore())
       .on('close', (e) => BrowserWindow.fromId(e.sender.id)?.close());
+
+    ipcMain.on('openSettings', () => void showSettingsWindow());
 
     await createMainWindow();
 

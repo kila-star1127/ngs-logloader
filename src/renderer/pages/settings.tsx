@@ -56,7 +56,7 @@ const Home = () => {
       </div>
       <div>
         非アクティブ時の不透明度
-        <input type="number" ref={inactiveOpacityInputRef} min="0.1" max="1" step="00.1" />
+        <input type="number" ref={inactiveOpacityInputRef} min="0.1" max="0.7" step="0.1" />
       </div>
       <div>
         クリックスルー
