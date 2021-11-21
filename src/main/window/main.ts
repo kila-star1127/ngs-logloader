@@ -50,5 +50,7 @@ export const createMainWindow = async () => {
     console.log(item, amount);
   });
 
+  log.watch();
+
   return mainWindow;
 };

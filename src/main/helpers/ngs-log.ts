@@ -1,4 +1,4 @@
-import { FSWatcher, readdir, watch } from 'fs';
+import { FSWatcher, readdirSync, watch } from 'fs';
 import EventEmitter from 'events';
 import { Tail } from 'tail';
 import path from 'path';
@@ -62,20 +62,23 @@ export class NgsLog extends EventEmitter {
   }
 
   private updateLogFilePath(logFilePath: string, watch = true) {
+    console.log('logFilePath:', logFilePath);
+
     if (this.tail) this.tail.unwatch();
 
     try {
-      const tail = new Tail(logFilePath, { encoding: '' });
+      const tail = new Tail(logFilePath, { encoding: 'utf16le' });
       tail.on('line', (line: string) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
         const [date, logId, actionType, playerId, characterName, item, sub, ...other] =
           line.split('\t');
 
         if (actionType == '[Pickup]') {
-          const numBracketReg = /(?<=Num\().*?(?=\))/; // Num(***)
-          const amount = Number(sub.match(numBracketReg)?.[0]);
+          const numBracketReg = /(?<=^Num\()[0-9]*(?=\)$)/; // Num(***)
+          const meseta = item.match(/(?<=^Meseta\()[0-9]*(?=\)$)/); // Meseta(***)
+          const amount = Number(meseta ?? sub.match(numBracketReg)?.[0]);
 
-          if (!isNaN(amount)) this.emit('line', item, amount);
+          this.emit('line', meseta ? 'Meseta' : item, isNaN(amount) ? 1 : amount);
         }
       });
 
@@ -89,31 +92,22 @@ export class NgsLog extends EventEmitter {
   }
 
   private getLatestFileName() {
-    let latestFileName: string | undefined;
+    const files = readdirSync(this.logDirectoryPath, { withFileTypes: true });
 
-    readdir(this.logDirectoryPath, { withFileTypes: true }, (err, files) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+    const [latestFile] = files.reduce<[string | null, number]>(
+      (prev, curr) => {
+        if (!curr.isFile() || !this.fileNameRegExp.test(curr.name)) return prev;
 
-      const [latestFile] = files.reduce<[string | null, number]>(
-        (prev, curr) => {
-          if (!curr.isFile() || this.fileNameRegExp.test(curr.name)) return prev;
+        const [prevName, prevDate] = prev;
+        const currDate = Number(curr.name.slice(this.logType.length, -1).replaceAll(/[^0-9]/g, ''));
 
-          const [prevName, prevDate] = prev;
-          const currDate = Number(curr.name.slice(this.logType.length, this.logType.length + 8));
+        if (prevName) return [curr.name, currDate];
 
-          if (prevName) return [curr.name, currDate];
+        return prevDate > currDate ? prev : [curr.name, currDate];
+      },
+      [null, 0],
+    );
 
-          return prevDate > currDate ? prev : [curr.name, currDate];
-        },
-        [null, 0],
-      );
-
-      if (latestFile) latestFileName = latestFile;
-    });
-
-    return latestFileName;
+    return latestFile;
   }
 }
