@@ -21,6 +21,7 @@
     "@types/object.pick": "^1.3.1",
     "@types/react": "^16.9.49",
     "@types/styled-components": "^5.1.15",
+    "@types/tail": "^2.2.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "electron": "^16.0.0",
@@ -42,10 +43,12 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "constate": "^3.3.0",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.0.1",
     "object.pick": "^1.3.0",
     "styled-components": "^5.3.3",
+    "styled-reset": "^4.3.4",
     "tail": "^2.2.4"
   }
 }
