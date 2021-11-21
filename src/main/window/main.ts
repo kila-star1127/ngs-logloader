@@ -1,8 +1,7 @@
-import { Tail } from 'tail';
+import { NgsLog } from '../helpers/ngs-log';
 import { app } from 'electron';
 import { configStore } from '../stores/config';
 import { createWindow } from '../helpers';
-import path from 'path';
 
 export const createMainWindow = async () => {
   const config = configStore.store;
@@ -43,20 +42,13 @@ export const createMainWindow = async () => {
     app.quit();
   });
 
-  const logDirectoryPath = config
-    .get('logDirectoryPath')
-    .replaceAll(/%.*?%/g, (match) => process.env[match.replaceAll('%', '')]?.toString() ?? match);
+  const log = new NgsLog({
+    logDirectoryPath: config.get('logDirectoryPath'),
+  });
 
-  const logFilePath = path.join(logDirectoryPath, 'test.txt');
-
-  try {
-    const tail = new Tail(logFilePath);
-    tail.watch();
-    tail.on('line', (e) => console.log(e));
-    tail.on('error', (e) => console.error(e));
-  } catch (error) {
-    console.error(error);
-  }
+  log.on('line', (item, amount) => {
+    console.log(item, amount);
+  });
 
   return mainWindow;
 };
