@@ -1,6 +1,8 @@
+import { Tail } from 'tail';
 import { app } from 'electron';
 import { configStore } from '../stores/config';
 import { createWindow } from '../helpers';
+import path from 'path';
 
 export const createMainWindow = async () => {
   const config = configStore.store;
@@ -41,19 +43,20 @@ export const createMainWindow = async () => {
     app.quit();
   });
 
-  // const settingsLogFilePath = '%USERPROFILE%/Documents/test.txt';
-  // const logFilePath = settingsLogFilePath.replaceAll(
-  //   /%.*?%/g,
-  //   (match) => process.env[match.replaceAll('%', '')]?.toString() ?? match,
-  // );
-  // try {
-  //   const tail = new Tail(logFilePath);
-  //   tail.watch();
-  //   tail.on('line', (e) => console.log(e));
-  //   tail.on('error', (e) => console.error(e));
-  // } catch (error) {
-  //   console.error(error);
-  // }
+  const logDirectoryPath = config
+    .get('logDirectoryPath')
+    .replaceAll(/%.*?%/g, (match) => process.env[match.replaceAll('%', '')]?.toString() ?? match);
+
+  const logFilePath = path.join(logDirectoryPath, 'test.txt');
+
+  try {
+    const tail = new Tail(logFilePath);
+    tail.watch();
+    tail.on('line', (e) => console.log(e));
+    tail.on('error', (e) => console.error(e));
+  } catch (error) {
+    console.error(error);
+  }
 
   return mainWindow;
 };
