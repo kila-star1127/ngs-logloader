@@ -21,17 +21,22 @@ type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
 export const Titlebar = React.memo(() => {
   const [maximized, setMaximized] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
+  const [visible, setVisible] = useState(true);
 
   const ipcRenderer = ipc;
 
   useEffect(() => {
     const onMaximized = () => setMaximized(true);
     const onUnmaximized = () => setMaximized(false);
+    const onHideTitlebar = () => setVisible(false);
+    const onShowTitlebar = () => setVisible(true);
     const onPageTitleUpdated: ElectronEventListener = (_, title: string) => setTitle(title);
     ipcRenderer
       .on('maximize', onMaximized)
       .on('unmaximize', onUnmaximized)
-      .on('page-title-updated', onPageTitleUpdated);
+      .on('page-title-updated', onPageTitleUpdated)
+      .on('hideTitlebar', onHideTitlebar)
+      .on('showTitlebar', onShowTitlebar);
 
     void ipcRenderer.invoke('getPageTitle').then((v: string) => setTitle(v));
     void ipcRenderer.invoke('getIsMaximazed').then((v: boolean) => setMaximized(v));
@@ -53,14 +58,18 @@ export const Titlebar = React.memo(() => {
   };
 
   return (
-    <FLTitlebar
-      icon="/icons/icon.ico"
-      title={title}
-      onClose={() => ipcRenderer.send('close')}
-      onMinimize={() => ipcRenderer.send('minimize')}
-      onMaximize={handleMaximize}
-      maximized={maximized}
-    />
+    <FLTitlebarWrapper>
+      {visible && (
+        <FLTitlebar
+          icon="/icons/icon.ico"
+          title={title}
+          onClose={() => ipcRenderer.send('close')}
+          onMinimize={() => ipcRenderer.send('minimize')}
+          onMaximize={handleMaximize}
+          maximized={maximized}
+        />
+      )}
+    </FLTitlebarWrapper>
   );
 });
 
@@ -106,7 +115,7 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
   );
 
   return (
-    <TitleBarRoot>
+    <Bar>
       {!maximized && <ResizeHandle className="top" />}
       {!maximized && <ResizeHandle className="left" />}
       <div className="icon">
@@ -118,12 +127,18 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
         {!disableMaximize && maixmaizeButton}
         {closeButton}
       </WindowControls>
-    </TitleBarRoot>
+    </Bar>
   );
 });
 
-const TitleBarRoot = styled.div`
+const FLTitlebarWrapper = styled.div`
+  padding-top: ${titlebarHeight}px;
+`;
+
+const Bar = styled.div`
   -webkit-app-region: drag;
+  position: fixed;
+  top: 0;
   width: 100%;
   height: ${titlebarHeight}px;
   font-size: 12px;

@@ -29,10 +29,12 @@ export const createMainWindow = async () => {
       const alwaysOnTop = config.get('alwaysOnTop');
       mainWindow.setIgnoreMouseEvents(alwaysOnTop && config.get('clickThrough'));
       mainWindow.setOpacity(config.get('inactiveOpacity'));
+      mainWindow.webContents.send('hideTitlebar');
     })
     .on('focus', () => {
       mainWindow.setIgnoreMouseEvents(false);
       mainWindow.setOpacity(1);
+      mainWindow.webContents.send('showTitlebar');
     });
 
   mainWindow.on('closed', () => {
