@@ -20,7 +20,7 @@ export class NgsLog extends EventEmitter {
   constructor(options: { logDirectoryPath: string }) {
     super();
 
-    this.fileNameRegExp = new RegExp(`^${this.logType}[0-9]{8}_[0-9]+.txt`, 'g');
+    this.fileNameRegExp = new RegExp(`^${this.logType}[0-9]{8}_[0-9]+.txt`);
     this.logDirectoryPath = options.logDirectoryPath.replaceAll(
       /%.*?%/g,
       (match) => process.env[match.replaceAll('%', '')]?.toString() ?? match,
@@ -74,11 +74,13 @@ export class NgsLog extends EventEmitter {
           line.split('\t');
 
         if (actionType == '[Pickup]') {
-          const numBracketReg = /(?<=^Num\()[0-9]*(?=\)$)/; // Num(***)
-          const meseta = item.match(/(?<=^Meseta\()[0-9]*(?=\)$)/); // Meseta(***)
-          const amount = Number(meseta ?? sub.match(numBracketReg)?.[0]);
+          const numBracketReg = /(?<=^Num\()[0-9]+(?=\)$)/; // Num(***)
+          const mesetaStr = sub.match(/(?<=^Meseta\()[0-9]+(?=\)$)/)?.[0]; // Meseta(***)
 
-          this.emit('line', meseta ? 'Meseta' : item, isNaN(amount) ? 1 : amount);
+          const amountStr = sub.match(numBracketReg)?.[0];
+
+          if (mesetaStr) this.emit('line', 'Meseta', Number(mesetaStr));
+          else this.emit('line', item, Number(amountStr ?? 1));
         }
       });
 
@@ -94,14 +96,14 @@ export class NgsLog extends EventEmitter {
   private getLatestFileName() {
     const files = readdirSync(this.logDirectoryPath, { withFileTypes: true });
 
+    console.log(this.fileNameRegExp);
+
     const [latestFile] = files.reduce<[string | null, number]>(
       (prev, curr) => {
         if (!curr.isFile() || !this.fileNameRegExp.test(curr.name)) return prev;
 
-        const [prevName, prevDate] = prev;
+        const [, prevDate] = prev;
         const currDate = Number(curr.name.slice(this.logType.length, -1).replaceAll(/[^0-9]/g, ''));
-
-        if (prevName) return [curr.name, currDate];
 
         return prevDate > currDate ? prev : [curr.name, currDate];
       },
