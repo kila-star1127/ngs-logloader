@@ -42,9 +42,9 @@ export const Titlebar = React.memo(() => {
 
     return () => {
       ipcRenderer
-        .removeListener('maximize', onMaximized)
-        .removeListener('unmaximize', onUnmaximized)
-        .on('page-title-upldated', onPageTitleUpdated);
+        .off('maximize', onMaximized)
+        .off('unmaximize', onUnmaximized)
+        .off('page-title-upldated', onPageTitleUpdated);
     };
   }, [ipcRenderer]);
 
