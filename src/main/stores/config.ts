@@ -4,6 +4,7 @@ type Config = {
   alwaysOnTop: boolean;
   inactiveOpacity: number;
   clickThrough: boolean;
+  logDirectoryPath: string;
 };
 
 class ConfigStore {
@@ -13,6 +14,7 @@ class ConfigStore {
       alwaysOnTop: Boolean(true),
       inactiveOpacity: 0.7,
       clickThrough: Boolean(true),
+      logDirectoryPath: '%USERPROFILE%\\Documents\\SEGA\\PHANTASYSTARONLINE2\\log_ngs',
     },
   });
 

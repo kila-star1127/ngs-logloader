@@ -1,6 +1,5 @@
 import { IpcRenderer, ipcRenderer as ipc } from 'electron';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import styled from 'styled-components';
 
 const titlebarHeight = 28; // px
@@ -43,9 +42,9 @@ export const Titlebar = React.memo(() => {
 
     return () => {
       ipcRenderer
-        .removeListener('maximize', onMaximized)
-        .removeListener('unmaximize', onUnmaximized)
-        .on('page-title-upldated', onPageTitleUpdated);
+        .off('maximize', onMaximized)
+        .off('unmaximize', onUnmaximized)
+        .off('page-title-upldated', onPageTitleUpdated);
     };
   }, [ipcRenderer]);
 
@@ -118,9 +117,7 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
     <Bar>
       {!maximized && <ResizeHandle className="top" />}
       {!maximized && <ResizeHandle className="left" />}
-      <div className="icon">
-        <Image layout="fill" objectFit="contain" src={icon} />
-      </div>
+      <Icon src={icon} />
       <Title>{title}</Title>
       <WindowControls>
         {!disableMinimize && minimizeButton}
@@ -146,15 +143,14 @@ const Bar = styled.div`
   align-items: center;
   background-color: black;
   display: flex;
-  > .icon {
-    position: relative;
-    width: ${titlebarHeight + 10}px;
-    height: ${titlebarHeight - 10}px;
-    /* margin: 0 10px; */
-  }
   button {
     outline: none;
   }
+`;
+
+const Icon = styled.img`
+  height: ${titlebarHeight - 10}px;
+  padding: 5px;
 `;
 
 const ResizeHandle = styled.div`

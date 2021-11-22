@@ -1,3 +1,4 @@
+import { NgsLog } from '../helpers/ngs-log';
 import { app } from 'electron';
 import { configStore } from '../stores/config';
 import { createWindow } from '../helpers';
@@ -41,19 +42,16 @@ export const createMainWindow = async () => {
     app.quit();
   });
 
-  // const settingsLogFilePath = '%USERPROFILE%/Documents/test.txt';
-  // const logFilePath = settingsLogFilePath.replaceAll(
-  //   /%.*?%/g,
-  //   (match) => process.env[match.replaceAll('%', '')]?.toString() ?? match,
-  // );
-  // try {
-  //   const tail = new Tail(logFilePath);
-  //   tail.watch();
-  //   tail.on('line', (e) => console.log(e));
-  //   tail.on('error', (e) => console.error(e));
-  // } catch (error) {
-  //   console.error(error);
-  // }
+  const log = new NgsLog({
+    logDirectoryPath: config.get('logDirectoryPath'),
+  });
+
+  log.on('line', (item, amount) => {
+    console.log(item, amount);
+    mainWindow.webContents.send('ActionPickup', item, amount);
+  });
+
+  log.watch();
 
   return mainWindow;
 };
