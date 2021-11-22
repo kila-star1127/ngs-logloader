@@ -12,7 +12,7 @@ class ConfigStore {
     name: 'config',
     defaults: {
       alwaysOnTop: Boolean(true),
-      inactiveOpacity: 0.7,
+      inactiveOpacity: 0.3,
       clickThrough: Boolean(true),
       logDirectoryPath: '%USERPROFILE%\\Documents\\SEGA\\PHANTASYSTARONLINE2\\log_ngs',
     },

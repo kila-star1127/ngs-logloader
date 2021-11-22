@@ -37,6 +37,7 @@ const windowWithinBounds = (_windowState: WindowState, bounds: Electron.Rectangl
 const createWindowOptions = (options: WindowOptions): WindowOptions => ({
   ...options,
   show: false,
+  transparent: true,
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,

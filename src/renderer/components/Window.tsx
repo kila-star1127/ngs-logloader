@@ -4,20 +4,26 @@ import { Titlebar } from './Titlebar';
 import { useWindowContext } from '../hooks/useWindow';
 
 export const Window = React.memo(({ children }) => {
-  const { backgroundColor } = useWindowContext();
+  const { bgColor, bgOpacity } = useWindowContext();
   return (
-    <StyledWindow backgroundColor={backgroundColor}>
+    <>
+      <BG bgColor={bgColor} opacity={bgOpacity} />
       <Titlebar />
       {children}
-    </StyledWindow>
+    </>
   );
 });
 
-type StyledWindowProps = {
-  backgroundColor: CSSProperties['backgroundColor'];
+type BGProps = {
+  bgColor: CSSProperties['backgroundColor'];
+  opacity: CSSProperties['opacity'];
 };
-const StyledWindow = styled.div<StyledWindowProps>`
+const BG = styled.div<BGProps>`
   inset: 0;
-  background-color: ${(p) => p.backgroundColor};
+  z-index: -1;
+  position: absolute;
+  background-color: ${(p) => p.bgColor};
+  opacity: ${(p) => p.opacity};
+  width: 100%;
   height: 100%;
 `;

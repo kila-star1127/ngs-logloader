@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { useWindowContext } from '../../hooks/useWindow';
 
 export const MainWindowLayout = React.memo(({ children }) => {
-  const { setBackgroundColor } = useWindowContext();
+  const { setBgColor } = useWindowContext();
 
   useEffect(() => {
-    setBackgroundColor('black');
-  }, [setBackgroundColor]);
+    setBgColor('black');
+  }, [setBgColor]);
 
-  return <>{children}</>;
+  return <Layout>{children}</Layout>;
 });
+
+const Layout = styled.div`
+  color: white;
+`;

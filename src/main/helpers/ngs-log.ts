@@ -45,7 +45,7 @@ export class NgsLog extends EventEmitter {
       // NOTE: eventType is 'rename' | 'change'
 
       // - on Update Latest
-      if (eventType == 'rename' && !this.fileNameRegExp.test(fileName)) {
+      if (eventType == 'rename' && this.fileNameRegExp.test(fileName)) {
         this.updateLogFilePath(path.join(dir, fileName));
       }
     });
