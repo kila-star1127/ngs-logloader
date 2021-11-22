@@ -67,7 +67,7 @@ export class NgsLog extends EventEmitter {
     if (this.tail) this.tail.unwatch();
 
     try {
-      const tail = new Tail(logFilePath, { encoding: 'utf16le' });
+      const tail = new Tail(logFilePath, { encoding: 'utf16le', useWatchFile: true });
       tail.on('line', (line: string) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
         const [date, logId, actionType, playerId, characterName, item, sub, ...other] =
