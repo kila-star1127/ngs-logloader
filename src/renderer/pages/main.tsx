@@ -1,9 +1,18 @@
+import { IpcRenderer, ipcRenderer } from 'electron';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import React from 'react';
-import { ipcRenderer } from 'electron';
-
 const Home = () => {
+  useEffect(() => {
+    const onActionPickup: Parameters<IpcRenderer['on']>[1] = (e, item: string, amount: number) => {
+      console.log(item, amount);
+    };
+    ipcRenderer.on('ActionPickup', onActionPickup);
+
+    return () => {
+      ipcRenderer.off('ActionPickup', onActionPickup);
+    };
+  }, []);
   return (
     <>
       <Head>

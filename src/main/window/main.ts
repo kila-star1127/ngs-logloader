@@ -48,6 +48,7 @@ export const createMainWindow = async () => {
 
   log.on('line', (item, amount) => {
     console.log(item, amount);
+    mainWindow.webContents.send('ActionPickup', item, amount);
   });
 
   log.watch();
