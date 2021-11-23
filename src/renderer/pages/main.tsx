@@ -1,12 +1,14 @@
 import { IpcRenderer, ipcRenderer } from 'electron';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { MainWindowLayout } from '../components/Layouts/MainWindowLayout';
 const Home = () => {
+  const [state, setState] = useState<Map<string, number>>(new Map());
+
   useEffect(() => {
     const onActionPickup: Parameters<IpcRenderer['on']>[1] = (e, item: string, amount: number) => {
       console.log(item, amount);
+      setState((prev) => new Map(prev.set(item, (prev.get(item) ?? 0) + amount)));
     };
     ipcRenderer.on('ActionPickup', onActionPickup);
 
@@ -17,23 +19,22 @@ const Home = () => {
   return (
     <MainWindowLayout>
       <Head>
-        <title>Home - Nextron (with-typescript)</title>
+        <title>ngs-logloader</title>
       </Head>
-      <div>
-        <p>
-          ⚡ Electron + Next.js ⚡ -
-          <Link href="/next">
-            <a>Go to next page</a>
-          </Link>
-        </p>
-        <img src="/images/logo.png" />
-      </div>
+      <div>test</div>
+      <hr />
+      {Array.from(state).map(([item, amount]) => (
+        <div key={item}>
+          {item} : {amount}
+        </div>
+      ))}
+      <hr />
       <button
         onClick={() => {
           ipcRenderer.send('openSettings');
         }}
       >
-        a
+        ⚙ 設定
       </button>
     </MainWindowLayout>
   );
