@@ -1,8 +1,8 @@
 import { IpcRenderer, ipcRenderer as ipc } from 'electron';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useWindowContext } from '../hooks/useWindow';
 
-const titlebarHeight = 28; // px
 type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
 
 /**
@@ -56,19 +56,16 @@ export const Titlebar = React.memo(() => {
     }
   };
 
+  if (!visible) return <></>;
   return (
-    <FLTitlebarWrapper>
-      {visible && (
-        <FLTitlebar
-          icon="/icons/icon.ico"
-          title={title}
-          onClose={() => ipcRenderer.send('close')}
-          onMinimize={() => ipcRenderer.send('minimize')}
-          onMaximize={handleMaximize}
-          maximized={maximized}
-        />
-      )}
-    </FLTitlebarWrapper>
+    <FLTitlebar
+      icon="/icons/icon.ico"
+      title={title}
+      onClose={() => ipcRenderer.send('close')}
+      onMinimize={() => ipcRenderer.send('minimize')}
+      onMaximize={handleMaximize}
+      maximized={maximized}
+    />
   );
 });
 
@@ -95,6 +92,8 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
     maximized,
   } = props;
 
+  const { titlebarHeight } = useWindowContext();
+
   const minimizeButton = (
     <button onClick={onMinimize} aria-label="minimize" title="Minimize" tabIndex={-1}>
       {minimizeSvg}
@@ -114,9 +113,7 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
   );
 
   return (
-    <Bar>
-      {!maximized && <ResizeHandle className="top" />}
-      {!maximized && <ResizeHandle className="left" />}
+    <Bar titlebarHeight={titlebarHeight}>
       <Icon src={icon} />
       <Title>{title}</Title>
       <WindowControls>
@@ -128,16 +125,14 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
   );
 });
 
-const FLTitlebarWrapper = styled.div`
-  padding-top: ${titlebarHeight}px;
-`;
-
-const Bar = styled.div`
+type BarProps = {
+  titlebarHeight: number;
+};
+const Bar = styled.div<BarProps>`
   -webkit-app-region: drag;
-  position: fixed;
-  top: 0;
+  inset: 0;
   width: 100%;
-  height: ${titlebarHeight}px;
+  height: ${(p) => p.titlebarHeight}px;
   font-size: 12px;
   color: white;
   align-items: center;
@@ -149,23 +144,8 @@ const Bar = styled.div`
 `;
 
 const Icon = styled.img`
-  height: ${titlebarHeight - 10}px;
+  height: 100%;
   padding: 5px;
-`;
-
-const ResizeHandle = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  -webkit-app-region: no-drag;
-  &.top {
-    width: 100%;
-    height: 3px;
-  }
-  &.left {
-    width: 3px;
-    height: ${titlebarHeight};
-  }
 `;
 
 const Title = styled.div`

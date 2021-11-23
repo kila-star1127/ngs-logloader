@@ -8,8 +8,9 @@ import { useState } from 'react';
 type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
 
 const useWindow = () => {
-  const [bgColor, setBgColor] = useState<CSSProperties['backgroundColor']>('white');
+  const [bgColor, setBgColor] = useState<CSSProperties['backgroundColor']>('#3349');
   const [bgOpacity, setBgOpacity] = useState<CSSProperties['opacity']>(1);
+  const [titlebarHeight] = useState(28); // px
 
   useEffect(() => {
     const onSetBgOpacity: ElectronEventListener = (_, title: string) => setBgOpacity(title);
@@ -24,6 +25,7 @@ const useWindow = () => {
     bgColor,
     setBgOpacity,
     bgOpacity,
+    titlebarHeight,
   };
 };
 
