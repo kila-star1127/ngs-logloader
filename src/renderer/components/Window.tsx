@@ -9,7 +9,7 @@ export const Window = React.memo(({ children }) => {
     <>
       <BG bgColor={bgColor} opacity={bgOpacity} />
       <Titlebar />
-      {children}
+      <Content>{children}</Content>
     </>
   );
 });
@@ -26,4 +26,9 @@ const BG = styled.div<BGProps>`
   opacity: ${(p) => p.opacity};
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
+  border: 1px solid cyan;
+  box-shadow: inset 0 0 2px 0 cyan;
 `;
+
+const Content = styled.div``;
