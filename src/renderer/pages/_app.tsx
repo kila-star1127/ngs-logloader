@@ -1,8 +1,8 @@
 import styled, { createGlobalStyle } from 'styled-components';
 import { AppProps } from 'next/app';
 import React from 'react';
-import reset from 'styled-reset';
 import { WindowProvider } from '../hooks/useWindow';
+import reset from 'styled-reset';
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
