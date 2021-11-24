@@ -1,8 +1,8 @@
-import { IpcRenderer, ipcRenderer as ipc } from 'electron';
+import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+import { useWindowContext } from '../hooks/useWindow';
 
-const titlebarHeight = 28; // px
 type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
 
 /**
@@ -20,22 +20,17 @@ type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
 export const Titlebar = React.memo(() => {
   const [maximized, setMaximized] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
-  const [visible, setVisible] = useState(true);
 
-  const ipcRenderer = ipc;
+  const { isFocusWindow } = useWindowContext();
 
   useEffect(() => {
     const onMaximized = () => setMaximized(true);
     const onUnmaximized = () => setMaximized(false);
-    const onHideTitlebar = () => setVisible(false);
-    const onShowTitlebar = () => setVisible(true);
     const onPageTitleUpdated: ElectronEventListener = (_, title: string) => setTitle(title);
     ipcRenderer
       .on('maximize', onMaximized)
       .on('unmaximize', onUnmaximized)
-      .on('page-title-updated', onPageTitleUpdated)
-      .on('hideTitlebar', onHideTitlebar)
-      .on('showTitlebar', onShowTitlebar);
+      .on('page-title-updated', onPageTitleUpdated);
 
     void ipcRenderer.invoke('getPageTitle').then((v: string) => setTitle(v));
     void ipcRenderer.invoke('getIsMaximazed').then((v: boolean) => setMaximized(v));
@@ -46,7 +41,7 @@ export const Titlebar = React.memo(() => {
         .off('unmaximize', onUnmaximized)
         .off('page-title-upldated', onPageTitleUpdated);
     };
-  }, [ipcRenderer]);
+  }, []);
 
   const handleMaximize = () => {
     if (maximized) {
@@ -56,19 +51,17 @@ export const Titlebar = React.memo(() => {
     }
   };
 
+  if (!isFocusWindow) return <></>;
+
   return (
-    <FLTitlebarWrapper>
-      {visible && (
-        <FLTitlebar
-          icon="/icons/icon.ico"
-          title={title}
-          onClose={() => ipcRenderer.send('close')}
-          onMinimize={() => ipcRenderer.send('minimize')}
-          onMaximize={handleMaximize}
-          maximized={maximized}
-        />
-      )}
-    </FLTitlebarWrapper>
+    <FLTitlebar
+      icon="/icons/icon.ico"
+      title={title}
+      onClose={() => ipcRenderer.send('close')}
+      onMinimize={() => ipcRenderer.send('minimize')}
+      onMaximize={handleMaximize}
+      maximized={maximized}
+    />
   );
 });
 
@@ -92,80 +85,91 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
     onClose,
     disableMaximize,
     disableMinimize,
-    maximized,
+    // maximized,
   } = props;
-
-  const minimizeButton = (
-    <button onClick={onMinimize} aria-label="minimize" title="Minimize" tabIndex={-1}>
-      {minimizeSvg}
-    </button>
-  );
-
-  const maixmaizeButton = (
-    <button onClick={onMaximize} aria-label="maximize" title="Maximize" tabIndex={-1}>
-      {maximizeSvg}
-    </button>
-  );
-
-  const closeButton = (
-    <button onClick={onClose} aria-label="close" title="Close" tabIndex={-1} className="close">
-      {closeSvg}
-    </button>
-  );
 
   return (
     <Bar>
-      {!maximized && <ResizeHandle className="top" />}
-      {!maximized && <ResizeHandle className="left" />}
       <Icon src={icon} />
       <Title>{title}</Title>
       <WindowControls>
-        {!disableMinimize && minimizeButton}
-        {!disableMaximize && maixmaizeButton}
-        {closeButton}
+        {!disableMinimize && (
+          <button onClick={onMinimize} aria-label="minimize" title="Minimize" tabIndex={-1}>
+            {minimizeSvg}
+          </button>
+        )}
+        {!disableMaximize && (
+          <button onClick={onMaximize} aria-label="maximize" title="Maximize" tabIndex={-1}>
+            {maximizeSvg}
+          </button>
+        )}
+        {
+          <button
+            onClick={onClose}
+            aria-label="close"
+            title="Close"
+            tabIndex={-1}
+            className="close"
+          >
+            {closeSvg}
+          </button>
+        }
       </WindowControls>
     </Bar>
   );
 });
-
-const FLTitlebarWrapper = styled.div`
-  padding-top: ${titlebarHeight}px;
+const anim = keyframes`
+ ${Array(10)
+   .fill(null)
+   .map(() => {
+     return css`
+       ${100 * Math.random()}% {
+         opacity: ${0.5 + Math.random() * 0.4};
+         filter: blur(${0.5 + Math.random() * 0.5}px);
+       }
+     `;
+   })}
+   from {
+    opacity: 0.5;
+    filter: blur(0.5px);
+   }
+   to {
+    opacity: 0.5;
+    filter: blur(0.5px);
+   }
 `;
 
 const Bar = styled.div`
   -webkit-app-region: drag;
-  position: fixed;
-  top: 0;
+  inset: 0;
   width: 100%;
-  height: ${titlebarHeight}px;
+  height: 35px;
   font-size: 12px;
   color: white;
   align-items: center;
-  background-color: black;
   display: flex;
-  button {
-    outline: none;
+  position: relative;
+  background-color: #306796;
+
+  > * {
+    z-index: 0;
+  }
+
+  ::before {
+    content: '';
+    animation: 3s ${anim} infinite alternate;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mask-image: linear-gradient(45deg, black, transparent 20% 80%, black);
+    background: 0 0 / 5px 5px radial-gradient(circle 3px, #67ffff 50%, transparent 50%);
+    background-repeat: space;
   }
 `;
 
 const Icon = styled.img`
-  height: ${titlebarHeight - 10}px;
+  height: 100%;
   padding: 5px;
-`;
-
-const ResizeHandle = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  -webkit-app-region: no-drag;
-  &.top {
-    width: 100%;
-    height: 3px;
-  }
-  &.left {
-    width: 3px;
-    height: ${titlebarHeight};
-  }
 `;
 
 const Title = styled.div`

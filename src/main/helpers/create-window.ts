@@ -37,6 +37,7 @@ const windowWithinBounds = (_windowState: WindowState, bounds: Electron.Rectangl
 const createWindowOptions = (options: WindowOptions): WindowOptions => ({
   ...options,
   show: false,
+  transparent: true,
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
@@ -109,7 +110,9 @@ export const createWindow = async ({ windowName, loadPath, options }: CreateWind
   win
     .on('page-title-updated', (_, title) => win.webContents.send('page-title-updated', title))
     .on('maximize', () => win.webContents.send('maximize'))
-    .on('unmaximize', () => win.webContents.send('unmaximize'));
+    .on('unmaximize', () => win.webContents.send('unmaximize'))
+    .on('focus', () => win.webContents.send('focus'))
+    .on('blur', () => win.webContents.send('blur'));
 
   if (options?.show || options?.show === undefined) {
     win.once('ready-to-show', () => {

@@ -22,20 +22,20 @@ export const createMainWindow = async () => {
     mainWindow.setAlwaysOnTop(alwaysOnTop);
     if (!mainWindow.isFocused()) {
       mainWindow.setIgnoreMouseEvents(alwaysOnTop && clickThrough);
-      mainWindow.setOpacity(inactiveOpacity);
+      mainWindow.webContents.send('setBgOpacity', inactiveOpacity);
     }
   });
   mainWindow
     .on('blur', () => {
       const alwaysOnTop = config.get('alwaysOnTop');
       mainWindow.setIgnoreMouseEvents(alwaysOnTop && config.get('clickThrough'));
-      mainWindow.setOpacity(config.get('inactiveOpacity'));
-      mainWindow.webContents.send('hideTitlebar');
+      // mainWindow.setOpacity(config.get('inactiveOpacity'));
+      mainWindow.webContents.send('blur');
     })
     .on('focus', () => {
       mainWindow.setIgnoreMouseEvents(false);
       mainWindow.setOpacity(1);
-      mainWindow.webContents.send('showTitlebar');
+      mainWindow.webContents.send('focus');
     });
 
   mainWindow.on('closed', () => {
