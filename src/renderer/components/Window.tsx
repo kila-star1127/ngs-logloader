@@ -40,6 +40,7 @@ const Root = styled.div<RootProps>`
     box-shadow: inset 0 0 5px -1px cyan;
   }
 
+  color: white;
   * {
     text-shadow: ${() =>
       Array(4)
@@ -56,6 +57,5 @@ const Content = styled.div`
   font-size: 0.9rem;
   letter-spacing: 0.1rem;
   line-height: 1.25rem;
-  color: #a5bebe;
   margin: 10px;
 `;

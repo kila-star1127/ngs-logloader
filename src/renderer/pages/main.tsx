@@ -1,7 +1,8 @@
 import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import { Button } from '../components/Button';
 import Head from 'next/head';
+import styled from 'styled-components';
 import { useWindowContext } from '../hooks/useWindow';
 const Home = () => {
   const [state, setState] = useState<Map<string, number>>(new Map());
@@ -58,28 +59,4 @@ const Flex = styled.div`
   display: flex;
   gap: 10px;
   flex-direction: column;
-`;
-
-type ButtonProps = {
-  isFocusWindow: boolean;
-};
-const Button = styled.button<ButtonProps>`
-  padding: 10px;
-  color: white;
-  background-color: #2f639199;
-  border: 2px solid transparent;
-  :hover,
-  :focus {
-    background-color: #2f6391ce;
-    border-color: #00ffff7d;
-    box-shadow: #00ffff7d inset 0 0 10px 0;
-    /* box-shadow: #00ffff7d inset 0 0 1px 1px; */
-    box-sizing: content-box;
-  }
-
-  ${(p) =>
-    !p.isFocusWindow &&
-    css`
-      opacity: 0.2;
-    `}
 `;

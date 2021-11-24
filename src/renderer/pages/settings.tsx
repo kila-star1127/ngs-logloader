@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
+import { Button } from '../components/Button';
 import Head from 'next/head';
 import { ipcRenderer } from 'electron';
 
@@ -63,7 +64,7 @@ const Home = () => {
         <input type="checkbox" ref={clickThroughInputRef} />
       </div>
       <hr />
-      <button onClick={onClickSave}>設定を保存</button>
+      <Button onClick={onClickSave}>設定を保存</Button>
     </>
   );
 };
