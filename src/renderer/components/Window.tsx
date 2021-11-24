@@ -1,38 +1,43 @@
-import styled, { CSSProperties } from 'styled-components';
 import React from 'react';
 import { Titlebar } from './Titlebar';
+import styled from 'styled-components';
 import { useWindowContext } from '../hooks/useWindow';
 
 export const Window = React.memo(({ children }) => {
-  const { bgColor, bgOpacity } = useWindowContext();
+  const { isFocusWindow } = useWindowContext();
 
   return (
-    <Root>
-      <BG bgColor={bgColor} opacity={bgOpacity} />
+    <Root isFocusWindow={isFocusWindow}>
       <Titlebar />
       <Content>{children}</Content>
-      <Front />
     </Root>
   );
 });
 
-const Root = styled.div`
+type RootProps = {
+  isFocusWindow: boolean;
+};
+const Root = styled.div<RootProps>`
   height: 100%;
   padding: 1px;
-`;
-
-type BGProps = {
-  bgColor: CSSProperties['backgroundColor'];
-  opacity: CSSProperties['opacity'];
-};
-const BG = styled.div<BGProps>`
-  inset: 0;
-  z-index: -1;
-  position: absolute;
-  background-color: ${(p) => p.bgColor};
-  opacity: ${(p) => p.opacity};
-  width: 100%;
-  height: 100%;
+  ::before,
+  ::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: ${(p) => (p.isFocusWindow ? 1 : 0.3)};
+  }
+  ::before {
+    z-index: -1;
+    background-color: #3349;
+  }
+  ::after {
+    pointer-events: none;
+    border: 1px solid cyan;
+    box-shadow: inset 0 0 5px -1px cyan;
+  }
 `;
 
 const Content = styled.div`
@@ -48,12 +53,4 @@ const Content = styled.div`
       .join(',')};
 `;
 
-const Front = styled.div`
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 1px solid cyan;
-  box-shadow: inset 0 0 2px 0 cyan;
-`;
+const Front = styled.div``;

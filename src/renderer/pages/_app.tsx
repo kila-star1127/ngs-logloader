@@ -29,7 +29,7 @@ ${reset}
     display: flex;
     flex-direction: column;
   }
-  * {
+  *, ::before, ::after {
     box-sizing: border-box;
   }
 `;

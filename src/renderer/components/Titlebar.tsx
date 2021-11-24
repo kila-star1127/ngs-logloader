@@ -1,6 +1,6 @@
-import { IpcRenderer, ipcRenderer as ipc } from 'electron';
+import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { useWindowContext } from '../hooks/useWindow';
 
 type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
@@ -20,22 +20,17 @@ type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
 export const Titlebar = React.memo(() => {
   const [maximized, setMaximized] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
-  const [visible, setVisible] = useState(true);
 
-  const ipcRenderer = ipc;
+  const { isFocusWindow } = useWindowContext();
 
   useEffect(() => {
     const onMaximized = () => setMaximized(true);
     const onUnmaximized = () => setMaximized(false);
-    const onHideTitlebar = () => setVisible(false);
-    const onShowTitlebar = () => setVisible(true);
     const onPageTitleUpdated: ElectronEventListener = (_, title: string) => setTitle(title);
     ipcRenderer
       .on('maximize', onMaximized)
       .on('unmaximize', onUnmaximized)
-      .on('page-title-updated', onPageTitleUpdated)
-      .on('hideTitlebar', onHideTitlebar)
-      .on('showTitlebar', onShowTitlebar);
+      .on('page-title-updated', onPageTitleUpdated);
 
     void ipcRenderer.invoke('getPageTitle').then((v: string) => setTitle(v));
     void ipcRenderer.invoke('getIsMaximazed').then((v: boolean) => setMaximized(v));
@@ -46,7 +41,7 @@ export const Titlebar = React.memo(() => {
         .off('unmaximize', onUnmaximized)
         .off('page-title-upldated', onPageTitleUpdated);
     };
-  }, [ipcRenderer]);
+  }, []);
 
   const handleMaximize = () => {
     if (maximized) {
@@ -56,7 +51,8 @@ export const Titlebar = React.memo(() => {
     }
   };
 
-  if (!visible) return <></>;
+  if (!isFocusWindow) return <></>;
+
   return (
     <FLTitlebar
       icon="/icons/icon.ico"
@@ -89,10 +85,8 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
     onClose,
     disableMaximize,
     disableMinimize,
-    maximized,
+    // maximized,
   } = props;
-
-  const { titlebarHeight } = useWindowContext();
 
   const minimizeButton = (
     <button onClick={onMinimize} aria-label="minimize" title="Minimize" tabIndex={-1}>
@@ -113,7 +107,7 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
   );
 
   return (
-    <Bar titlebarHeight={titlebarHeight}>
+    <Bar>
       <Icon src={icon} />
       <Title>{title}</Title>
       <WindowControls>
@@ -124,22 +118,57 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
     </Bar>
   );
 });
+const anim = keyframes`
+ ${Array(10)
+   .fill(null)
+   .map(() => {
+     return css`
+       ${100 * Math.random()}% {
+         opacity: ${0.5 + Math.random() * 0.4};
+         filter: blur(${0.5 + Math.random() * 0.5}px);
+       }
+     `;
+   })}
+   from {
+    opacity: 0.5;
+    filter: blur(0.5px);
+   }
+   to {
+    opacity: 0.5;
+    filter: blur(0.5px);
+   }
+`;
 
-type BarProps = {
-  titlebarHeight: number;
-};
-const Bar = styled.div<BarProps>`
+const Bar = styled.div`
   -webkit-app-region: drag;
   inset: 0;
   width: 100%;
-  height: ${(p) => p.titlebarHeight}px;
+  height: 35px;
   font-size: 12px;
   color: white;
   align-items: center;
-  background-color: black;
   display: flex;
+  position: relative;
+  background-color: #306796;
+
+  > * {
+    z-index: 1;
+  }
+
   button {
     outline: none;
+  }
+
+  ::before {
+    content: '';
+    z-index: 0;
+    animation: 3s ${anim} infinite alternate;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mask-image: linear-gradient(45deg, black, transparent 20% 80%, black);
+    background: 0 0 / 5px 5px radial-gradient(circle 3px, #67ffff 40%, transparent 40%);
+    background-repeat: space;
   }
 `;
 

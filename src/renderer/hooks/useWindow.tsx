@@ -1,31 +1,23 @@
-import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect } from 'react';
-import { CSSProperties } from 'styled-components';
 import { Window } from '../components/Window';
 import constate from 'constate';
+import { ipcRenderer } from 'electron';
 import { useState } from 'react';
 
-type ElectronEventListener = Parameters<IpcRenderer['on']>[1];
-
 const useWindow = () => {
-  const [bgColor, setBgColor] = useState<CSSProperties['backgroundColor']>('#3349');
-  const [bgOpacity, setBgOpacity] = useState<CSSProperties['opacity']>(1);
-  const [titlebarHeight] = useState(28); // px
+  const [isFocusWindow, setIsFocus] = useState(false);
 
   useEffect(() => {
-    const onSetBgOpacity: ElectronEventListener = (_, title: string) => setBgOpacity(title);
-    ipcRenderer.on('setBgOpacity', onSetBgOpacity);
+    const onFocus = () => setIsFocus(true);
+    const onBlur = () => setIsFocus(false);
+    ipcRenderer.on('focus', onFocus).on('blur', onBlur);
 
     return () => {
-      ipcRenderer.off('setBgOpacity', onSetBgOpacity);
+      ipcRenderer.off('focus', onFocus).off('blur', onBlur);
     };
   }, []);
   return {
-    setBgColor,
-    bgColor,
-    setBgOpacity,
-    bgOpacity,
-    titlebarHeight,
+    isFocusWindow,
   };
 };
 
