@@ -23,6 +23,7 @@ ${reset}
   html {
     overflow: hidden;
     height: 100%;
+    
   }
   #__next {
     height: 100%;
@@ -31,5 +32,27 @@ ${reset}
   }
   *, ::before, ::after {
     box-sizing: border-box;
+  }
+  button {
+    border: none;
+    outline: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    backdrop-filter: blur(5px);
+    background-color: #9994;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+  }
+  
+  ::-webkit-scrollbar-button{
+    background-color: #7a8287;
+    height: 4px;
   }
 `;

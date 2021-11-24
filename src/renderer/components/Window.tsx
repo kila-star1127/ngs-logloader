@@ -18,8 +18,9 @@ type RootProps = {
   isFocusWindow: boolean;
 };
 const Root = styled.div<RootProps>`
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  padding: 1px;
   ::before,
   ::after {
     content: '';
@@ -38,19 +39,23 @@ const Root = styled.div<RootProps>`
     border: 1px solid cyan;
     box-shadow: inset 0 0 5px -1px cyan;
   }
+
+  * {
+    text-shadow: ${() =>
+      Array(4)
+        .fill(null)
+        .map((_, i) => `${i & 1 ? 1 : -1}px ${i & 2 ? 1 : -1}px 1px #333`)
+        .join(',')};
+  }
 `;
 
 const Content = styled.div`
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: hidden;
   font-size: 0.9rem;
   letter-spacing: 0.1rem;
   line-height: 1.25rem;
   color: #a5bebe;
-  padding: 0 20px;
-  text-shadow: ${() =>
-    Array(4)
-      .fill(null)
-      .map((_, i) => `${i & 1 ? 1 : -1}px ${i & 2 ? 1 : -1}px 1px #333`)
-      .join(',')};
+  margin: 10px;
 `;
-
-const Front = styled.div``;

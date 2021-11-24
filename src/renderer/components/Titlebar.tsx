@@ -88,32 +88,32 @@ const FLTitlebar = React.memo<FLTitlebarProps>((props) => {
     // maximized,
   } = props;
 
-  const minimizeButton = (
-    <button onClick={onMinimize} aria-label="minimize" title="Minimize" tabIndex={-1}>
-      {minimizeSvg}
-    </button>
-  );
-
-  const maixmaizeButton = (
-    <button onClick={onMaximize} aria-label="maximize" title="Maximize" tabIndex={-1}>
-      {maximizeSvg}
-    </button>
-  );
-
-  const closeButton = (
-    <button onClick={onClose} aria-label="close" title="Close" tabIndex={-1} className="close">
-      {closeSvg}
-    </button>
-  );
-
   return (
     <Bar>
       <Icon src={icon} />
       <Title>{title}</Title>
       <WindowControls>
-        {!disableMinimize && minimizeButton}
-        {!disableMaximize && maixmaizeButton}
-        {closeButton}
+        {!disableMinimize && (
+          <button onClick={onMinimize} aria-label="minimize" title="Minimize" tabIndex={-1}>
+            {minimizeSvg}
+          </button>
+        )}
+        {!disableMaximize && (
+          <button onClick={onMaximize} aria-label="maximize" title="Maximize" tabIndex={-1}>
+            {maximizeSvg}
+          </button>
+        )}
+        {
+          <button
+            onClick={onClose}
+            aria-label="close"
+            title="Close"
+            tabIndex={-1}
+            className="close"
+          >
+            {closeSvg}
+          </button>
+        }
       </WindowControls>
     </Bar>
   );
@@ -152,22 +152,17 @@ const Bar = styled.div`
   background-color: #306796;
 
   > * {
-    z-index: 1;
-  }
-
-  button {
-    outline: none;
+    z-index: 0;
   }
 
   ::before {
     content: '';
-    z-index: 0;
     animation: 3s ${anim} infinite alternate;
     position: absolute;
     width: 100%;
     height: 100%;
     mask-image: linear-gradient(45deg, black, transparent 20% 80%, black);
-    background: 0 0 / 5px 5px radial-gradient(circle 3px, #67ffff 40%, transparent 40%);
+    background: 0 0 / 5px 5px radial-gradient(circle 3px, #67ffff 50%, transparent 50%);
     background-repeat: space;
   }
 `;
