@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
-import { Window } from '../components/Window';
+import { WindowName } from '../types';
 import constate from 'constate';
 import { ipcRenderer } from 'electron';
+import { useEffect } from 'react';
 import { useState } from 'react';
 
-const useWindow = () => {
+type UseWindowOptions = {
+  windowName: WindowName;
+};
+const useWindow = ({ windowName }: UseWindowOptions) => {
   const [isFocusWindow, setIsFocus] = useState(false);
 
   useEffect(() => {
@@ -21,13 +24,5 @@ const useWindow = () => {
   };
 };
 
-const [Provider, useWindowContext] = constate(useWindow);
-
-export { useWindowContext };
-export const WindowProvider = React.memo(({ children }) => {
-  return (
-    <Provider>
-      <Window>{children}</Window>
-    </Provider>
-  );
-});
+export const [WindowProvider, useWindowContext] = constate(useWindow);
+export type WindowProviderProps = UseWindowOptions;

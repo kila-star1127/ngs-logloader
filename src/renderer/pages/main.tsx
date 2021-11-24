@@ -2,9 +2,11 @@ import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
 import { Button } from '../components/Button';
 import Head from 'next/head';
+import { PageFC } from 'next';
 import styled from 'styled-components';
 import { useWindowContext } from '../hooks/useWindow';
-const Home = () => {
+
+const Home: PageFC = () => {
   const [state, setState] = useState<Map<string, number>>(new Map());
 
   const { isFocusWindow } = useWindowContext();
@@ -20,6 +22,7 @@ const Home = () => {
       ipcRenderer.off('ActionPickup', onActionPickup);
     };
   }, []);
+
   return (
     <>
       <Head>
@@ -45,6 +48,7 @@ const Home = () => {
     </>
   );
 };
+Home.getInitialProps = () => ({ windowName: 'main' });
 
 export default Home;
 

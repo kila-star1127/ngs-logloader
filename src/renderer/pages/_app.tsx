@@ -1,15 +1,21 @@
-import { AppProps } from 'next/app';
+import { AppPageProps } from 'next/app';
 import React from 'react';
+import { Window } from '../components/Window';
 import { WindowProvider } from '../hooks/useWindow';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+const App: React.FC<AppPageProps> = ({ Component, pageProps }) => {
+  const { windowName } = pageProps;
+  console.log(windowName);
+
   return (
     <>
       <GlobalStyle />
-      <WindowProvider>
-        <Component {...pageProps} />
+      <WindowProvider windowName={windowName}>
+        <Window>
+          <Component {...pageProps} />
+        </Window>
       </WindowProvider>
     </>
   );

@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Button } from '../components/Button';
 import Head from 'next/head';
+import { PageFC } from 'next';
 import { ipcRenderer } from 'electron';
 
-const Home = () => {
+const Settings: PageFC = () => {
   const alwaysOnTopInputRef = useRef<HTMLInputElement>(null);
   const clickThroughInputRef = useRef<HTMLInputElement>(null);
   const inactiveOpacityInputRef = useRef<HTMLInputElement>(null);
@@ -68,5 +69,6 @@ const Home = () => {
     </>
   );
 };
+Settings.getInitialProps = () => ({ windowName: 'settings' });
 
-export default Home;
+export default Settings;
