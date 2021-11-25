@@ -3,8 +3,11 @@ import { Button } from '../components/Button';
 import Head from 'next/head';
 import { PageFC } from 'next';
 import { ipcRenderer } from 'electron';
+import { useWindowContext } from '../hooks/useWindow';
 
 const Settings: PageFC = () => {
+  const { isActiveWindow } = useWindowContext();
+
   const alwaysOnTopInputRef = useRef<HTMLInputElement>(null);
   const clickThroughInputRef = useRef<HTMLInputElement>(null);
   const inactiveOpacityInputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +68,9 @@ const Settings: PageFC = () => {
         <input type="checkbox" ref={clickThroughInputRef} />
       </div>
       <hr />
-      <Button onClick={onClickSave}>設定を保存</Button>
+      <Button isActiveWindw={isActiveWindow} onClick={onClickSave}>
+        設定を保存
+      </Button>
     </>
   );
 };

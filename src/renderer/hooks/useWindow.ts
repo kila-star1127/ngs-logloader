@@ -1,3 +1,4 @@
+import { WindowConfigs } from '../constants/window';
 import { WindowName } from '../types';
 import constate from 'constate';
 import { ipcRenderer } from 'electron';
@@ -8,7 +9,10 @@ type UseWindowOptions = {
   windowName: WindowName;
 };
 const useWindow = ({ windowName }: UseWindowOptions) => {
+  const inactiveWithBlur = WindowConfigs[windowName].inactiveWithBlur;
+
   const [isFocusWindow, setIsFocus] = useState(false);
+  const [isActiveWindow, setIsActive] = useState(inactiveWithBlur ? isFocusWindow : true);
 
   useEffect(() => {
     const onFocus = () => setIsFocus(true);
@@ -19,10 +23,15 @@ const useWindow = ({ windowName }: UseWindowOptions) => {
       ipcRenderer.off('focus', onFocus).off('blur', onBlur);
     };
   }, []);
+
+  useEffect(() => {
+    if (inactiveWithBlur) setIsActive(isFocusWindow);
+  }, [inactiveWithBlur, isFocusWindow]);
+
   return {
     isFocusWindow,
+    isActiveWindow,
   };
 };
 
 export const [WindowProvider, useWindowContext] = constate(useWindow);
-export type WindowProviderProps = UseWindowOptions;

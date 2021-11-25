@@ -1,9 +1,10 @@
 import styled, { css } from 'styled-components';
 
 type ButtonProps = {
-  isFocusWindow?: boolean;
+  isActiveWindw: boolean;
 };
 export const Button = styled.div<ButtonProps>`
+  user-select: none;
   padding: 10px;
   background-color: #2f639199;
   border: 2px solid transparent;
@@ -17,7 +18,7 @@ export const Button = styled.div<ButtonProps>`
   }
 
   ${(p) =>
-    !p.isFocusWindow &&
+    !p.isActiveWindw &&
     css`
       opacity: 0.2;
     `}
