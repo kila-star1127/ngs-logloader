@@ -39,9 +39,10 @@ ${reset}
   *, ::before, ::after {
     box-sizing: border-box;
   }
-  button {
-    border: none;
+
+  button, input {
     outline: none;
+    border: none;
   }
 
   ::-webkit-scrollbar {

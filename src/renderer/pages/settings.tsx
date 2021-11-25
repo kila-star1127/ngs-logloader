@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Button } from '../components/Button';
 import Head from 'next/head';
+import { Input } from '../components/Input';
 import { PageFC } from 'next';
 import { ipcRenderer } from 'electron';
 import { useWindowContext } from '../hooks/useWindow';
@@ -61,11 +62,11 @@ const Settings: PageFC = () => {
       </div>
       <div>
         非アクティブ時の不透明度
-        <input type="number" ref={inactiveOpacityInputRef} min="0.1" max="0.7" step="0.1" />
+        <Input type="number" ref={inactiveOpacityInputRef} min="0.1" max="0.7" step="0.1" />
       </div>
       <div>
         クリックスルー
-        <input type="checkbox" ref={clickThroughInputRef} />
+        <Input type="checkbox" ref={clickThroughInputRef} />
       </div>
       <hr />
       <Button isActiveWindw={isActiveWindow} onClick={onClickSave}>
