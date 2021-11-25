@@ -18,18 +18,16 @@ export const createMainWindow = async () => {
 
   config.onDidAnyChange((newConfig) => {
     if (!newConfig) return;
-    const { alwaysOnTop, clickThrough, inactiveOpacity } = newConfig;
+    const { alwaysOnTop, clickThrough } = newConfig;
     mainWindow.setAlwaysOnTop(alwaysOnTop);
     if (!mainWindow.isFocused()) {
       mainWindow.setIgnoreMouseEvents(alwaysOnTop && clickThrough);
-      mainWindow.webContents.send('setBgOpacity', inactiveOpacity);
     }
   });
   mainWindow
     .on('blur', () => {
       const alwaysOnTop = config.get('alwaysOnTop');
       mainWindow.setIgnoreMouseEvents(alwaysOnTop && config.get('clickThrough'));
-      // mainWindow.setOpacity(config.get('inactiveOpacity'));
       mainWindow.webContents.send('blur');
     })
     .on('focus', () => {
