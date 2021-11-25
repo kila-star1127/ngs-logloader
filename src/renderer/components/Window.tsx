@@ -34,6 +34,7 @@ const Root = styled.div<RootProps>`
     z-index: -1;
     background-color: #3349;
     opacity: ${(p) => (p.isActiveWindow ? 1 : 0.3)};
+    user-select: none;
   }
   ::after {
     opacity: ${(p) => (p.isFocusWindow ? 1 : 0.3)};
