@@ -53,6 +53,7 @@ Home.getInitialProps = () => ({ windowName: 'main' });
 export default Home;
 
 const ItemList = styled.div`
+  color: #a5bebe;
   padding: 0 10px;
   height: 100%;
   overflow-y: auto;
