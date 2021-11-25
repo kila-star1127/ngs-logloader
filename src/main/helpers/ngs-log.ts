@@ -75,9 +75,9 @@ export class NgsLog extends EventEmitter {
 
         if (actionType == '[Pickup]') {
           const numBracketReg = /(?<=^Num\()[0-9]+(?=\)$)/; // Num(***)
-          const mesetaStr = sub.match(/(?<=^Meseta\()[0-9]+(?=\)$)/)?.[0]; // Meseta(***)
+          const mesetaStr = sub?.match(/(?<=^Meseta\()[0-9]+(?=\)$)/)?.[0]; // Meseta(***)
 
-          const amountStr = sub.match(numBracketReg)?.[0];
+          const amountStr = sub?.match(numBracketReg)?.[0];
 
           if (mesetaStr) this.emit('line', 'Meseta', Number(mesetaStr));
           else this.emit('line', item, Number(amountStr ?? 1));
