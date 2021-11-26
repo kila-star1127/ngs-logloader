@@ -4,12 +4,9 @@ import { Button } from '../components/Button';
 import Head from 'next/head';
 import { PageFC } from 'next';
 import styled from 'styled-components';
-import { useWindowContext } from '../hooks/useWindow';
 
 const Home: PageFC = () => {
   const [state, setState] = useState<Map<string, number>>(new Map());
-
-  const { isActiveWindow } = useWindowContext();
 
   useEffect(() => {
     const onActionPickup: Parameters<IpcRenderer['on']>[1] = (e, item: string, amount: number) => {
@@ -37,7 +34,6 @@ const Home: PageFC = () => {
           ))}
         </ItemList>
         <Button
-          isActiveWindw={isActiveWindow}
           onClick={() => {
             ipcRenderer.send('openSettings');
           }}
