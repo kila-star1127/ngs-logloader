@@ -14,7 +14,6 @@ export const Button = styled.div<ButtonProps>`
     background-color: #2f6391ce;
     border-color: #00ffff7d;
     box-shadow: #00ffff7d inset 0 0 10px 0;
-    box-sizing: content-box;
   }
 
   ${(p) =>

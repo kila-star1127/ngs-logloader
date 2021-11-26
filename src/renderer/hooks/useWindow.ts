@@ -9,7 +9,7 @@ type UseWindowOptions = {
   windowName: WindowName;
 };
 const useWindow = ({ windowName }: UseWindowOptions) => {
-  const inactiveWithBlur = WindowConfigs[windowName].inactiveWithBlur;
+  const inactiveWithBlur = WindowConfigs[windowName]?.inactiveWithBlur;
 
   const [isFocusWindow, setIsFocus] = useState(false);
   const [isActiveWindow, setIsActive] = useState(inactiveWithBlur ? isFocusWindow : true);
