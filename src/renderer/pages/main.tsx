@@ -1,9 +1,9 @@
 import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 import { Button } from '../components/Button';
 import Head from 'next/head';
 import { PageFC } from 'next';
-import styled from 'styled-components';
 
 const Home: PageFC = () => {
   const [state, setState] = useState<Map<string, number>>(new Map());
@@ -11,7 +11,12 @@ const Home: PageFC = () => {
   useEffect(() => {
     const onActionPickup: Parameters<IpcRenderer['on']>[1] = (e, item: string, amount: number) => {
       console.log(item, amount);
-      setState((prev) => new Map(prev.set(item, (prev.get(item) ?? 0) + amount)));
+
+      const match = !!item.match('C/');
+
+      if (match) {
+        setState((prev) => new Map(prev.set(item, (prev.get(item) ?? 0) + amount)));
+      }
     };
     ipcRenderer.on('ActionPickup', onActionPickup);
 
@@ -27,19 +32,36 @@ const Home: PageFC = () => {
       </Head>
       <Flex>
         <ItemList>
-          {Array.from(state).map(([item, amount]) => (
-            <div key={item}>
-              {item} : {amount}
-            </div>
-          ))}
+          {[...state.keys()].map((item) => {
+            const amount = state.get(item);
+            if (amount == null) return;
+
+            return (
+              <Item key={`${item}-${amount}`}>
+                {item} : {amount}
+              </Item>
+            );
+          })}
         </ItemList>
-        <Button
-          onClick={() => {
-            ipcRenderer.send('openSettings');
-          }}
-        >
-          ⚙ 設定
-        </Button>
+        <div>
+          <Flex direction="row">
+            <Button
+              onClick={() => {
+                setState(new Map());
+              }}
+            >
+              RESET
+            </Button>
+            <Button
+              onClick={() => {
+                ipcRenderer.send('openSettings');
+                console.log('click');
+              }}
+            >
+              ⚙ 設定
+            </Button>
+          </Flex>
+        </div>
       </Flex>
     </>
   );
@@ -55,9 +77,30 @@ const ItemList = styled.div`
   overflow-y: auto;
 `;
 
-const Flex = styled.div`
-  height: 100%;
+const Flex = styled.div<{ direction?: 'column' | 'row' }>`
+  ${(p) =>
+    p.direction != 'row' &&
+    css`
+      height: 100%;
+    `}
+
+  > * {
+    width: 100%;
+  }
   display: flex;
   gap: 10px;
-  flex-direction: column;
+  flex-direction: ${(p) => p.direction ?? 'column'};
+`;
+
+const updateAnim = keyframes`
+    from {
+      color: #ffa500;
+    }
+    to {
+      color: none;
+    }
+`;
+
+const Item = styled.div`
+  animation: 5s cubic-bezier(1, 0.29, 1, -0.16) ${updateAnim};
 `;

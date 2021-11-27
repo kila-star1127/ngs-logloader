@@ -1,16 +1,24 @@
+import React, { PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
-import React from 'react';
 import { useWindowContext } from '../hooks/useWindow';
 
-export const Button = React.memo<JSX.IntrinsicElements['div']>(({ children }) => {
+type ButtonProps = PropsWithChildren<Pick<JSX.IntrinsicElements['div'], 'onClick'>>;
+
+export const Button = React.memo<ButtonProps>(({ children, ...props }) => {
   const { isActiveWindow } = useWindowContext();
-  return <Styled isActiveWindw={isActiveWindow}>{children}</Styled>;
+  return (
+    <Styled {...props} isActiveWindw={isActiveWindow}>
+      {children}
+    </Styled>
+  );
 });
 
 type StyledProps = {
   isActiveWindw: boolean;
 };
 export const Styled = styled.div<StyledProps>`
+  height: 100%;
+  width: 100%;
   user-select: none;
   padding: 10px;
   background-color: #2f639199;
