@@ -11,7 +11,7 @@
     "build": "nextron build",
     "postinstall": "electron-builder install-app-deps",
     "fix": "run-s fix:eslint fix:prettier",
-    "fix:eslint": "yarn lint:eslint --fix",
+    "fix:eslint": "yarn eslint --fix",
     "fix:prettier": "yarn lint:prettier --write",
     "lint:prettier": "prettier ."
   },
