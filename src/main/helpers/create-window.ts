@@ -48,10 +48,16 @@ const createWindowOptions = (options: WindowOptions): WindowOptions => ({
 export type CreateWindowOptions = {
   windowName?: string;
   loadPath?: string;
+  showInactive?: boolean;
   options?: WindowOptions;
 };
 
-export const createWindow = async ({ windowName, loadPath, options }: CreateWindowOptions) => {
+export const createWindow = async ({
+  windowName,
+  showInactive,
+  loadPath,
+  options,
+}: CreateWindowOptions) => {
   let windowState: WindowState = {};
 
   if (windowName) {
@@ -116,7 +122,8 @@ export const createWindow = async ({ windowName, loadPath, options }: CreateWind
 
   if (options?.show || options?.show === undefined) {
     win.once('ready-to-show', () => {
-      win.show();
+      if (showInactive) win.showInactive();
+      else win.show();
     });
   }
 
