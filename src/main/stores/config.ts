@@ -15,7 +15,7 @@ class ConfigStore {
     name: 'config',
     defaults: {
       alwaysOnTop: Boolean(true),
-      clickThrough: Boolean(true),
+      clickThrough: Boolean(false),
       logDirectoryPath: '%USERPROFILE%\\Documents\\SEGA\\PHANTASYSTARONLINE2\\log_ngs',
       filters: {
         ignore: [],

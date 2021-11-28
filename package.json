@@ -1,6 +1,6 @@
 {
   "name": "ngs-logloader",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha",
   "description": "read, analyze, and view the \"PHANTASY STAR ONLINE 2 : NEW GENESIS\" logs.",
   "main": "app/background.js",
   "author": "KILA <32559459+kila-star1127@users.noreply.github.com>",
@@ -25,7 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "electron": "^16.0.0",
-    "electron-builder": "^22.13.1",
+    "electron-builder": "^22.14.5",
     "eslint": "^8.2.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-next": "^12.0.4",
