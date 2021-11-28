@@ -4,10 +4,10 @@ import styled from 'styled-components';
 import { useWindowContext } from '../hooks/useWindow';
 
 export const Window = React.memo(({ children }) => {
-  const { isFocusWindow } = useWindowContext();
+  const { isFocusWindow, isActiveWindow } = useWindowContext();
 
   return (
-    <Root isFocusWindow={isFocusWindow}>
+    <Root isFocusWindow={isFocusWindow} isActiveWindow={isActiveWindow}>
       <Titlebar />
       <Content>{children}</Content>
     </Root>
@@ -16,6 +16,7 @@ export const Window = React.memo(({ children }) => {
 
 type RootProps = {
   isFocusWindow: boolean;
+  isActiveWindow: boolean;
 };
 const Root = styled.div<RootProps>`
   display: flex;
@@ -28,18 +29,21 @@ const Root = styled.div<RootProps>`
     inset: 0;
     width: 100%;
     height: 100%;
-    opacity: ${(p) => (p.isFocusWindow ? 1 : 0.3)};
   }
   ::before {
     z-index: -1;
     background-color: #3349;
+    opacity: ${(p) => (p.isActiveWindow ? 1 : 0.3)};
+    user-select: none;
   }
   ::after {
+    opacity: ${(p) => (p.isFocusWindow ? 1 : 0.3)};
     pointer-events: none;
     border: 1px solid cyan;
     box-shadow: inset 0 0 5px -1px cyan;
   }
 
+  color: white;
   * {
     text-shadow: ${() =>
       Array(4)
@@ -56,6 +60,5 @@ const Content = styled.div`
   font-size: 0.9rem;
   letter-spacing: 0.1rem;
   line-height: 1.25rem;
-  color: #a5bebe;
   margin: 10px;
 `;

@@ -1,24 +1,39 @@
 import { IpcRenderer, ipcRenderer } from 'electron';
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+import { Button } from '../components/Button';
 import Head from 'next/head';
-import { useWindowContext } from '../hooks/useWindow';
-const Home = () => {
-  const [state, setState] = useState<Map<string, number>>(new Map());
+import { PageFC } from 'next';
 
-  const { isFocusWindow } = useWindowContext();
+const Home: PageFC = () => {
+  const [state, setState] = useState<Map<string, number>>(new Map());
 
   useEffect(() => {
     const onActionPickup: Parameters<IpcRenderer['on']>[1] = (e, item: string, amount: number) => {
       console.log(item, amount);
+
       setState((prev) => new Map(prev.set(item, (prev.get(item) ?? 0) + amount)));
     };
+
+    const onUpdateFilter: Parameters<IpcRenderer['on']>[1] = (e, filters: string[]) => {
+      setState((prev) => {
+        prev.forEach((_, item, map) => {
+          if (filters.every((filter) => item.indexOf(filter) < 0)) map.delete(item);
+        });
+
+        return new Map(prev);
+      });
+    };
+
     ipcRenderer.on('ActionPickup', onActionPickup);
+    ipcRenderer.on('UpdateFilter', onUpdateFilter);
 
     return () => {
       ipcRenderer.off('ActionPickup', onActionPickup);
+      ipcRenderer.off('UpdateFilter', onUpdateFilter);
     };
   }, []);
+
   return (
     <>
       <Head>
@@ -26,60 +41,75 @@ const Home = () => {
       </Head>
       <Flex>
         <ItemList>
-          {Array.from(state).map(([item, amount]) => (
-            <div key={item}>
-              {item} : {amount}
-            </div>
-          ))}
+          {[...state.keys()].map((item) => {
+            const amount = state.get(item);
+            if (amount == null) return;
+
+            return (
+              <Item key={`${item}-${amount}`}>
+                {item} : {amount}
+              </Item>
+            );
+          })}
         </ItemList>
-        <Button
-          isFocusWindow={isFocusWindow}
-          onClick={() => {
-            ipcRenderer.send('openSettings');
-          }}
-        >
-          ⚙ 設定
-        </Button>
+        <div>
+          <Flex direction="row">
+            <Button
+              onClick={() => {
+                setState(new Map());
+              }}
+            >
+              RESET
+            </Button>
+            <Button
+              onClick={() => {
+                ipcRenderer.send('openSettings');
+                console.log('click');
+              }}
+            >
+              ⚙ 設定
+            </Button>
+          </Flex>
+        </div>
       </Flex>
     </>
   );
 };
+Home.getInitialProps = () => ({ windowName: 'main' });
 
 export default Home;
 
 const ItemList = styled.div`
+  color: #a5bebe;
   padding: 0 10px;
   height: 100%;
   overflow-y: auto;
 `;
 
-const Flex = styled.div`
-  height: 100%;
+const Flex = styled.div<{ direction?: 'column' | 'row' }>`
+  ${(p) =>
+    p.direction != 'row' &&
+    css`
+      height: 100%;
+    `}
+
+  > * {
+    width: 100%;
+  }
   display: flex;
   gap: 10px;
-  flex-direction: column;
+  flex-direction: ${(p) => p.direction ?? 'column'};
 `;
 
-type ButtonProps = {
-  isFocusWindow: boolean;
-};
-const Button = styled.button<ButtonProps>`
-  padding: 10px;
-  color: white;
-  background-color: #2f639199;
-  border: 2px solid transparent;
-  :hover,
-  :focus {
-    background-color: #2f6391ce;
-    border-color: #00ffff7d;
-    box-shadow: #00ffff7d inset 0 0 10px 0;
-    /* box-shadow: #00ffff7d inset 0 0 1px 1px; */
-    box-sizing: content-box;
-  }
+const updateAnim = keyframes`
+    from {
+      color: #ffa500;
+    }
+    to {
+      color: none;
+    }
+`;
 
-  ${(p) =>
-    !p.isFocusWindow &&
-    css`
-      opacity: 0.2;
-    `}
+const Item = styled.div`
+  animation: 5s cubic-bezier(1, 0.29, 1, -0.16) ${updateAnim};
 `;

@@ -21,7 +21,7 @@ export const Titlebar = React.memo(() => {
   const [maximized, setMaximized] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
 
-  const { isFocusWindow } = useWindowContext();
+  const { isActiveWindow } = useWindowContext();
 
   useEffect(() => {
     const onMaximized = () => setMaximized(true);
@@ -51,7 +51,7 @@ export const Titlebar = React.memo(() => {
     }
   };
 
-  if (!isFocusWindow) return <></>;
+  if (!isActiveWindow) return <></>;
 
   return (
     <FLTitlebar
@@ -141,6 +141,7 @@ const anim = keyframes`
 
 const Bar = styled.div`
   -webkit-app-region: drag;
+  user-select: none;
   inset: 0;
   width: 100%;
   height: 35px;
