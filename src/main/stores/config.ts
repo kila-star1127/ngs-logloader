@@ -4,6 +4,10 @@ type Config = {
   alwaysOnTop: boolean;
   clickThrough: boolean;
   logDirectoryPath: string;
+  filters: {
+    whitelist: string[];
+    ignore: string[];
+  };
 };
 
 class ConfigStore {
@@ -13,6 +17,10 @@ class ConfigStore {
       alwaysOnTop: Boolean(true),
       clickThrough: Boolean(true),
       logDirectoryPath: '%USERPROFILE%\\Documents\\SEGA\\PHANTASYSTARONLINE2\\log_ngs',
+      filters: {
+        ignore: [],
+        whitelist: [],
+      },
     },
   });
 

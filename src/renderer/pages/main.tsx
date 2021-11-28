@@ -12,16 +12,25 @@ const Home: PageFC = () => {
     const onActionPickup: Parameters<IpcRenderer['on']>[1] = (e, item: string, amount: number) => {
       console.log(item, amount);
 
-      const match = !!item.match('C/');
-
-      if (match) {
-        setState((prev) => new Map(prev.set(item, (prev.get(item) ?? 0) + amount)));
-      }
+      setState((prev) => new Map(prev.set(item, (prev.get(item) ?? 0) + amount)));
     };
+
+    const onUpdateFilter: Parameters<IpcRenderer['on']>[1] = (e, filters: string[]) => {
+      setState((prev) => {
+        prev.forEach((_, item, map) => {
+          if (filters.every((filter) => item.indexOf(filter) < 0)) map.delete(item);
+        });
+
+        return new Map(prev);
+      });
+    };
+
     ipcRenderer.on('ActionPickup', onActionPickup);
+    ipcRenderer.on('UpdateFilter', onUpdateFilter);
 
     return () => {
       ipcRenderer.off('ActionPickup', onActionPickup);
+      ipcRenderer.off('UpdateFilter', onUpdateFilter);
     };
   }, []);
 

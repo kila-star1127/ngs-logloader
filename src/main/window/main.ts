@@ -18,11 +18,17 @@ export const createMainWindow = async () => {
 
   config.onDidAnyChange((newConfig) => {
     if (!newConfig) return;
+
     const { alwaysOnTop, clickThrough } = newConfig;
     mainWindow.setAlwaysOnTop(alwaysOnTop);
     if (!mainWindow.isFocused()) {
       mainWindow.setIgnoreMouseEvents(alwaysOnTop && clickThrough);
     }
+  });
+  config.onDidChange('filters', (newValue) => {
+    if (!newValue) return;
+
+    mainWindow.webContents.send('UpdateFilter', newValue.whitelist);
   });
   mainWindow
     .on('blur', () => {
@@ -46,7 +52,11 @@ export const createMainWindow = async () => {
 
   log.on('line', (item, amount) => {
     console.log(item, amount);
-    mainWindow.webContents.send('ActionPickup', item, amount);
+
+    const { whitelist } = config.get('filters');
+    const match = !whitelist.length || whitelist.some((filter) => ~item.indexOf(filter));
+
+    if (match) mainWindow.webContents.send('ActionPickup', item, amount);
   });
 
   log.watch();

@@ -13,9 +13,7 @@ if (!gotTheLock) {
     await app.whenReady();
 
     ipcMain.handle('getConfig', (e, key) => configStore.store.get(key));
-    ipcMain.handle('setConfig', (e, ...[key, value]) => {
-      configStore.store.set(key, value);
-    });
+    ipcMain.handle('setConfig', (e, ...[key, value]) => configStore.store.set(key, value));
 
     ipcMain.handle('getPageTitle', (e) => BrowserWindow.fromId(e.sender.id)?.title);
     ipcMain.handle('getIsMaximazed', (e) => BrowserWindow.fromId(e.sender.id)?.isMaximized());

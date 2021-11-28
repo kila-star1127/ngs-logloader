@@ -1,11 +1,15 @@
 import { Flex, FlexItem } from './Flex';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from './Button';
 import { SquareBox } from './SquareBox';
 import { TextInput } from './Input';
 
-export const ItemNameFilter = React.memo(() => {
-  const [filters, setFilters] = useState<string[]>(['C/エアル']);
+type ItemNameFilterProps = {
+  onChange?(filter: string[]): void;
+  filters: string[];
+};
+export const ItemNameFilter = React.memo<ItemNameFilterProps>(({ onChange, filters: _filters }) => {
+  const [filters, setFilters] = useState<string[]>(_filters);
   const addNewFilter = useCallback(() => {
     setFilters((prev) => [...prev, '']);
   }, []);
@@ -27,6 +31,10 @@ export const ItemNameFilter = React.memo(() => {
       return [...prev];
     });
   }, []);
+
+  useEffect(() => {
+    onChange?.(filters);
+  }, [filters, onChange]);
 
   return (
     <Flex direction="column" gap="5px">
