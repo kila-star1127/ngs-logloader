@@ -8,6 +8,7 @@ export const createMainWindow = async () => {
   const mainWindow = await createWindow({
     windowName: 'main',
     loadPath: '/main',
+    showInactive: true,
     options: {
       width: 1000,
       height: 600,
